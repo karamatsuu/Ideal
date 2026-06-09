@@ -12,36 +12,46 @@
 </head>
 <body>
 
-<header class="site-header theme-light">
+<header class="site-header">
   <div class="container">
-    <a href="index.html" class="brand" aria-label="Damir Hotel home">
-      <span class="brand-mark">D</span>
-      <span class="brand-text"><span class="brand-name">DAMIR</span><span class="brand-sub">HOTEL</span></span>
-    </a>
-    <nav class="main-nav"><a href="index.html" class="nav-link is-active">Home</a><a href="rooms.html" class="nav-link">Rooms & Suites</a><a href="dining.html" class="nav-link">Dining</a><a href="gallery.html" class="nav-link">Gallery</a><a href="about.html" class="nav-link">About</a><a href="contact.html" class="nav-link">Contact</a></nav>
-    <div class="header-right">
-      <a href="#" class="btn btn--ghost header-cta" data-book>Book a stay</a>
-      <button class="nav-toggle" aria-label="Open menu"><span></span><span></span><span></span></button>
+    <nav class="nav-left">
+      <a href="rooms.html" class="nav-link">Rooms</a>
+      <a href="dining.html" class="nav-link">Dining</a>
+      <a href="gallery.html" class="nav-link">Gallery</a>
+    </nav>
+    <a href="index.html" class="brand-center" aria-label="Damir Hotel home">DAMIR · HOTEL</a>
+    <div class="nav-right">
+      <a href="about.html" class="nav-link">About</a>
+      <a href="contact.html" class="nav-link">Contact</a>
+      <a href="#" class="btn btn--amber header-cta" data-book>Book a stay</a>
+      <button class="nav-toggle" aria-label="Open menu"><span></span><span></span></button>
     </div>
   </div>
 </header>
 <nav class="mobile-menu">
-  <a href="index.html">Home</a><a href="rooms.html">Rooms & Suites</a><a href="dining.html">Dining</a><a href="gallery.html">Gallery</a><a href="about.html">About</a><a href="contact.html">Contact</a>
-  <a href="#" class="btn" data-book>Book a stay</a>
+  <a href="index.html">Home</a>
+  <a href="rooms.html">Rooms &amp; Suites</a>
+  <a href="dining.html">Dining</a>
+  <a href="gallery.html">Gallery</a>
+  <a href="about.html">About</a>
+  <a href="contact.html">Contact</a>
+  <a href="#" class="btn btn--amber" data-book>Book a stay</a>
 </nav>
+<button class="book-float" data-book aria-label="Book a stay">Book a stay</button>
 
-<section class="hero">
-  <div class="hero-media"><img src="assets/photos/junior-suite.jpg" alt="A warm, light-filled suite at Damir Hotel"></div>
-  <div class="container hero-inner">
-    <p class="eyebrow reveal-hero h1">Nukus, Karakalpakstan</p>
+<section class="hero-split">
+  <div class="hero-split-left">
+    <p class="eyebrow reveal-hero h1">Nukus · Karakalpakstan</p>
     <h1 class="reveal-hero h2">Quiet luxury,<br>warmly kept.</h1>
     <p class="hero-sub reveal-hero h3">Damir Hotel is a calm retreat of oak-warmed rooms, generous breakfasts and unhurried service — a considered base for work or rest.</p>
     <div class="hero-actions reveal-hero h3">
-      <a href="#" class="btn btn--light" data-book>Book your stay</a>
-      <a href="rooms.html" class="btn btn--ghost-light">Explore rooms</a>
+      <a href="#" class="btn btn--amber" data-book>Book your stay</a>
+      <a href="rooms.html" class="btn btn--ghost-dk">Explore rooms</a>
     </div>
   </div>
-  <div class="hero-scroll"><span>Scroll</span><span class="line"></span></div>
+  <div class="hero-split-right">
+    <img src="assets/photos/junior-suite.jpg" alt="A suite at Damir Hotel" fetchpriority="high">
+  </div>
 </section>
 
 <!-- booking bar -->
