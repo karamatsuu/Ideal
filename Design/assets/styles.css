@@ -22,6 +22,15 @@
   --sand:       #E7DECB;
   --sand-deep:  #DBCEB4;
 
+  /* dark hero palette */
+  --walnut-dark:   #1c1410;
+  --walnut-deep:   #16100d;
+  --amber:         #d4a96a;
+  --amber-dim:     rgba(212,169,106,0.5);
+  --cream-dk:      #f5ede0;
+  --muted-dk:      rgba(245,237,224,0.52);
+  --line-dk:       rgba(255,255,255,0.08);
+
   /* type */
   --serif: "Cormorant Garamond", Georgia, serif;
   --sans:  "Mulish", system-ui, -apple-system, sans-serif;
