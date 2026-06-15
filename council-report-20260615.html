@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Council Report — Damir Hotel Site Audit · 2026-06-15</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fafaf8;
+    --surface: #ffffff;
+    --border: #e8e4de;
+    --border-strong: #d0c9bf;
+    --text: #1a1714;
+    --muted: #6b6560;
+    --accent: #b85c2a;
+    --green: #2d6a4f;
+    --green-light: #edf7f2;
+    --amber: #92690a;
+    --amber-light: #fdf8ed;
+    --red: #c0392b;
+    --blue: #1a3a5c;
+    --blue-light: #eff4fb;
+    --purple: #5b3a82;
+    --purple-light: #f5f0fa;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  .page-header {
+    background: var(--text);
+    color: #fff;
+    padding: 2.5rem 2rem;
+  }
+  .page-header-inner { max-width: 880px; margin: 0 auto; }
+  .council-label {
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.4);
+    margin-bottom: .75rem;
+  }
+  .page-header h1 {
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 700;
+    line-height: 1.2;
+    color: #fff;
+    margin-bottom: .5rem;
+  }
+  .page-header .meta { font-size: .8rem; color: rgba(255,255,255,.4); }
+
+  .main { max-width: 880px; margin: 0 auto; padding: 2.5rem 2rem 5rem; }
+
+  /* verdict card */
+  .verdict-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border-strong);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+  .verdict-header {
+    background: var(--text);
+    color: #fff;
+    padding: 1.2rem 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+  }
+  .verdict-header .badge {
+    background: var(--accent);
+    color: #fff;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    padding: .25rem .6rem;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .verdict-header h2 { font-size: 1rem; font-weight: 600; color: #fff; }
+  .verdict-body { padding: 1.8rem; }
+
+  .section-block { margin-bottom: 2.4rem; }
+  .section-block:last-child { margin-bottom: 0; }
+  .section-label {
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: .9rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .section-label.agrees { color: var(--green); }
+  .section-label.clashes { color: var(--amber); }
+  .section-label.blindspots { color: var(--purple); }
+  .section-label.reco { color: var(--accent); }
+  .section-label.one-thing { color: var(--blue); }
+
+  .agree-point {
+    display: flex;
+    gap: .75rem;
+    align-items: flex-start;
+    padding: .85rem 1rem;
+    background: var(--green-light);
+    border: 1px solid #b7deca;
+    border-radius: 6px;
+    margin-bottom: .6rem;
+  }
+  .agree-point .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    margin-top: .45rem;
+    flex-shrink: 0;
+  }
+  .agree-point strong { color: var(--green); display: block; font-size: .85rem; margin-bottom: .2rem; }
+  .agree-point p { font-size: .88rem; color: #2a4a3a; margin: 0; }
+
+  .clash-block {
+    border-left: 3px solid #d4a920;
+    padding: .85rem 1rem;
+    background: var(--amber-light);
+    border-radius: 0 6px 6px 0;
+    margin-bottom: .8rem;
+  }
+  .clash-block strong { display: block; font-size: .85rem; color: var(--amber); margin-bottom: .3rem; }
+  .clash-block p { font-size: .88rem; color: #4a3a10; margin: 0; }
+
+  .blind-point {
+    padding: .85rem 1rem;
+    background: var(--purple-light);
+    border: 1px solid #c8aeed;
+    border-radius: 6px;
+    margin-bottom: .6rem;
+  }
+  .blind-point strong { display: block; font-size: .85rem; color: var(--purple); margin-bottom: .25rem; }
+  .blind-point p { font-size: .88rem; color: #3a2a55; margin: 0; }
+
+  .correction {
+    padding: .85rem 1rem;
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    border-radius: 6px;
+    margin-bottom: .6rem;
+    font-size: .85rem;
+    color: #5d4200;
+  }
+  .correction strong { color: #b8860b; }
+
+  .reco-list { list-style: none; counter-reset: reco; }
+  .reco-list li {
+    counter-increment: reco;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: .9rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .reco-list li:last-child { border-bottom: none; }
+  .reco-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    color: #fff;
+    font-size: .78rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: .1rem;
+  }
+  .reco-num.blocker { background: var(--red); }
+  .reco-num.should-fix { background: var(--amber); }
+  .reco-num.nice { background: #999; }
+  .reco-content strong { display: block; font-size: .9rem; margin-bottom: .25rem; }
+  .reco-content p { font-size: .84rem; color: var(--muted); margin: 0; }
+  .pill {
+    display: inline-block;
+    font-size: .65rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: .15rem .45rem;
+    border-radius: 3px;
+    margin-bottom: .35rem;
+  }
+  .pill.blocker { background: #fde8e6; color: var(--red); border: 1px solid #f5a6a0; }
+  .pill.should-fix { background: var(--amber-light); color: var(--amber); border: 1px solid #e8c96a; }
+  .pill.nice { background: #f0f0f0; color: #666; border: 1px solid #ddd; }
+
+  .one-thing-box {
+    background: var(--blue-light);
+    border: 1.5px solid #aec6e8;
+    border-radius: 8px;
+    padding: 1.4rem 1.6rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  .one-thing-icon { font-size: 1.8rem; line-height: 1; flex-shrink: 0; }
+  .one-thing-box h3 { font-size: 1rem; color: var(--blue); margin-bottom: .4rem; }
+  .one-thing-box p { font-size: .88rem; color: #2a3d5c; margin: 0; }
+
+  /* matrix */
+  .matrix-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+  .matrix-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+    font-size: .88rem;
+    color: var(--muted);
+    background: #f7f5f2;
+  }
+  .matrix-body { padding: 1.4rem 1.5rem; overflow-x: auto; }
+  .matrix-table { width: 100%; border-collapse: collapse; font-size: .8rem; min-width: 540px; }
+  .matrix-table th {
+    text-align: center;
+    padding: .5rem .4rem;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 2px solid var(--border);
+  }
+  .matrix-table th:first-child { text-align: left; }
+  .matrix-table td {
+    padding: .55rem .4rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+    text-align: center;
+  }
+  .matrix-table td:first-child { text-align: left; font-size: .82rem; font-weight: 500; }
+  .matrix-table tr:last-child td { border-bottom: none; }
+  .check { color: var(--green); font-weight: 700; }
+  .cross { color: #ddd; }
+
+  /* advisors */
+  .section-heading {
+    font-size: .85rem;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .advisors-section, .peer-section { margin-bottom: 2rem; }
+
+  details {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    overflow: hidden;
+  }
+  summary {
+    padding: .9rem 1.2rem;
+    cursor: pointer;
+    background: #f7f5f2;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    font-weight: 600;
+    font-size: .88rem;
+    list-style: none;
+    user-select: none;
+  }
+  summary:hover { background: #f0ede8; }
+  summary::-webkit-details-marker { display: none; }
+  .advisor-icon {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .85rem;
+    flex-shrink: 0;
+  }
+  .icon-c { background: #fde8e6; }
+  .icon-fp { background: #e8f0fe; }
+  .icon-ex { background: #e8f5e9; }
+  .icon-out { background: #fdf3e3; }
+  .icon-exec { background: #f3e5f5; }
+  .chevron { margin-left: auto; color: var(--muted); transition: transform .2s; }
+  details[open] .chevron { transform: rotate(90deg); }
+  .advisor-body {
+    padding: 1.2rem 1.4rem;
+    font-size: .88rem;
+    line-height: 1.75;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    white-space: pre-wrap;
+    color: #333;
+  }
+
+  .peer-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: .5rem;
+    padding: 1.1rem 1.4rem;
+    font-size: .85rem;
+    line-height: 1.65;
+    color: #333;
+  }
+  .peer-card p { margin-bottom: .45rem; }
+  .peer-card p:last-child { margin-bottom: 0; }
+  .peer-q { font-weight: 700; color: var(--muted); font-size: .72rem; letter-spacing: .07em; text-transform: uppercase; display: block; margin-bottom: .5rem; }
+
+  .page-footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    text-align: center;
+    font-size: .78rem;
+    color: var(--muted);
+    max-width: 880px;
+    margin: 0 auto;
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="page-header-inner">
+    <div class="council-label">LLM Council · Site Audit</div>
+    <h1>Damir Hotel — What's Blocking Sellable Shape?</h1>
+    <div class="meta">5 advisors · 5 peer reviews · Chairman synthesis · June 15, 2026</div>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- VERDICT -->
+  <div class="verdict-card">
+    <div class="verdict-header">
+      <span class="badge">Chairman's Verdict</span>
+      <h2>The full synthesis — read this first</h2>
+    </div>
+    <div class="verdict-body">
+
+      <div class="section-block">
+        <div class="section-label agrees">Where the Council Agrees</div>
+
+        <div class="agree-point">
+          <div class="dot"></div>
+          <div>
+            <strong>No prices shown anywhere — #1 conversion killer (unanimous)</strong>
+            <p>A guest who can't see a price leaves immediately to Booking.com and books there, paying OTA commission. The site is actively funding the middleman. Even "from $X/night" hardcoded is infinitely better than nothing.</p>
+          </div>
+        </div>
+
+        <div class="agree-point">
+          <div class="dot"></div>
+          <div>
+            <strong>No WhatsApp button — dealbreaker for this market (unanimous)</strong>
+            <p>Uzbekistan runs on WhatsApp. Telegram alone misses half the regional audience. A floating WhatsApp button (wa.me link) is the single highest-ROI change on the site and it's one anchor tag.</p>
+          </div>
+        </div>
+
+        <div class="agree-point">
+          <div class="dot"></div>
+          <div>
+            <strong>Google Apps Script URL exposed in hotel.js (4/5 advisors)</strong>
+            <p>The form endpoint is in a public JS file, unauthenticated. One scraped cache away from becoming a spam cannon that exhausts the hotel's Gmail quota. This is an operational risk, not a UX issue.</p>
+          </div>
+        </div>
+
+        <div class="agree-point">
+          <div class="dot"></div>
+          <div>
+            <strong>Hardcoded review stats will become a credibility time bomb (4/5 advisors)</strong>
+            <p>When the real Booking.com score drifts, the site shows stale numbers. A guest who cross-references will notice. Fix: add "Source: Booking.com ↗" with an inline link to the property page.</p>
+          </div>
+        </div>
+
+        <div class="agree-point">
+          <div class="dot"></div>
+          <div>
+            <strong>No JSON-LD structured data (3/5 advisors)</strong>
+            <p>Google won't show rich results for "hotel in Nukus." Hotel schema (name, address, telephone, priceRange, geo) is ~20 lines and a one-time fix on index.html.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label clashes">Where the Council Clashes</div>
+
+        <div class="clash-block">
+          <strong>Is the inquiry form the wrong tool entirely?</strong>
+          <p>The First Principles Thinker argues Central Asian guests book via WhatsApp DM — the form is solving the wrong problem. The Executor says fix the form's blockers and it works fine. <em>Resolution:</em> both coexist. International tourists (the Savitsky Museum draws Western visitors) prefer email forms. Local/regional guests prefer WhatsApp. WhatsApp goes first, above the fold, on every page. The form becomes the secondary option.</p>
+        </div>
+
+        <div class="clash-block">
+          <strong>Content strategy now vs. later?</strong>
+          <p>The Expansionist wants a blog, local SEO content, and editorial depth targeting "hotel Nukus" in three languages — the multilingual infrastructure already exists. Every peer reviewer called this premature. Fix the conversion basics first. The SEO opportunity is real but it's a post-launch concern, not a blocker.</p>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label blindspots">Blind Spots the Council Caught (emerged in peer review)</div>
+
+        <div class="blind-point">
+          <strong>Mobile performance — the problem that kills everything else first</strong>
+          <p>A dark-luxury site with heavy hero images on a market where many users are on 3G/4G mobile means the page may not finish loading before the guest abandons. No advisor mentioned Core Web Vitals, image compression, or LCP. Slow load kills conversion before any other issue matters.</p>
+        </div>
+
+        <div class="blind-point">
+          <strong>privacy.html is untracked in git — may not survive deployment</strong>
+          <p>The file exists locally but hasn't been committed. Additionally, the inquiry form collects names and email addresses with no consent checkbox — legal exposure that's trivially fixable: one checkbox + one sentence linking to the privacy policy.</p>
+        </div>
+
+        <div class="blind-point">
+          <strong>Multilingual form flow is untested as a conversion path</strong>
+          <p>The i18n infrastructure exists but whether form error states, validation messages, placeholder text, and the post-submit confirmation are translated into UZ and RU is unverified. An Uzbek-speaking guest who gets English validation errors has a broken experience. This is a launch blocker.</p>
+        </div>
+
+        <div class="blind-point">
+          <strong>HTTPS enforcement unverified</strong>
+          <p>The form collects personal guest data (name, email, phone). If the site can be served over HTTP, form submissions travel in plaintext. Must be confirmed before launch.</p>
+        </div>
+
+        <div class="correction">
+          <strong>⚠️ Council error, corrected:</strong> Three peer reviewers flagged "the form auto-reply is missing." It's actually already implemented in <code>form-endpoint.gs</code> — <code>MailApp.sendEmail()</code> sends a confirmation to the guest on submit. The real gap is the in-page confirmation message doesn't state a reply timeframe. Fix the copy ("we'll respond within 4 hours"), not the code.
+        </div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label reco">The Recommendation — priority order</div>
+        <ul class="reco-list">
+          <li>
+            <div class="reco-num blocker">1</div>
+            <div class="reco-content">
+              <span class="pill blocker">Blocker</span>
+              <strong>Add prices to rooms page</strong>
+              <p>Call the owner, get a "from $X/night" figure for each room category. Hardcode it in rooms.html and room.html. No live calendar needed — static text converts far better than nothing.</p>
+            </div>
+          </li>
+          <li>
+            <div class="reco-num blocker">2</div>
+            <div class="reco-content">
+              <span class="pill blocker">Blocker</span>
+              <strong>Add WhatsApp floating button to every page</strong>
+              <p>One <code>&lt;a href="https://wa.me/[number]"&gt;</code> tag, fixed bottom-right, wired in site.js alongside the existing Telegram link. Highest-ROI change on the site.</p>
+            </div>
+          </li>
+          <li>
+            <div class="reco-num blocker">3</div>
+            <div class="reco-content">
+              <span class="pill blocker">Blocker</span>
+              <strong>Harden the Apps Script endpoint</strong>
+              <p>Add CORS/Referrer validation in <code>doPost()</code> to reject requests not from the site domain. Add rate-limiting via <code>PropertiesService</code>. Do this before the site goes public.</p>
+            </div>
+          </li>
+          <li>
+            <div class="reco-num blocker">4</div>
+            <div class="reco-content">
+              <span class="pill blocker">Blocker</span>
+              <strong>Commit privacy.html + add consent checkbox to forms</strong>
+              <p><code>git add</code> and commit privacy.html. Add a checkbox to the inquiry form: "I agree to processing of my personal data per the Privacy Policy." Legal requirement.</p>
+            </div>
+          </li>
+          <li>
+            <div class="reco-num should-fix">5</div>
+            <div class="reco-content">
+              <span class="pill should-fix">Should Fix</span>
+              <strong>Add reply ETA to the post-submit confirmation message</strong>
+              <p>The auto-reply email already fires. The in-page confirmation just needs copy like "We'll get back to you within 4 hours" so guests don't feel they shouted into a void.</p>
+            </div>
+          </li>
+          <li>
+            <div class="reco-num should-fix">6</div>
+            <div class="reco-content">
+              <span class="pill should-fix">Should Fix</span>
+              <strong>Attribute the stats strip to Booking.com</strong>
+              <p>Add "Source: Booking.com ↗" as an inline link below the 8.2 / 9.3 / 155 figures, or link each to the hotel's Booking.com page. Unattributed numbers feel fabricated.</p>
+            </div>
+          </li>
+          <li>
+            <div class="reco-num should-fix">7</div>
+            <div class="reco-content">
+              <span class="pill should-fix">Should Fix</span>
+              <strong>Add JSON-LD Hotel schema to index.html</strong>
+              <p>~20 lines: name, address (with Latin transliteration alongside Cyrillic), telephone, priceRange, geo coordinates. Makes Google show rich results for "hotel in Nukus."</p>
+            </div>
+          </li>
+          <li>
+            <div class="reco-num should-fix">8</div>
+            <div class="reco-content">
+              <span class="pill should-fix">Should Fix</span>
+              <strong>Audit multilingual form states in UZ and RU</strong>
+              <p>Switch the site to UZ, submit with an invalid email, then empty required fields, then successfully. Every error message, label, and confirmation must be translated. Fix any English strings that leak through.</p>
+            </div>
+          </li>
+          <li>
+            <div class="reco-num should-fix">9</div>
+            <div class="reco-content">
+              <span class="pill should-fix">Should Fix</span>
+              <strong>Optimize hero images for mobile + verify HTTPS</strong>
+              <p>Compress and serve responsive images. Confirm <code>loading="lazy"</code> on all below-fold images. Run Lighthouse on throttled mobile. Get LCP under 3s. Confirm the site enforces HTTPS before form data can be submitted over HTTP.</p>
+            </div>
+          </li>
+          <li>
+            <div class="reco-num nice">10</div>
+            <div class="reco-content">
+              <span class="pill nice">Polish</span>
+              <strong>Add geographic anchor and surroundings context to homepage</strong>
+              <p>"2–3 hours from Tashkent by air," "walking distance from the Savitsky Museum," "Nukus city centre." International guests don't know where Nukus is. This is the single biggest selling point for cultural tourists — lean into it.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="section-block" style="margin-bottom:0">
+        <div class="section-label one-thing">The One Thing to Do First</div>
+        <div class="one-thing-box">
+          <div class="one-thing-icon">📞</div>
+          <div>
+            <h3>Call the owner. Get the price. Put it on the page.</h3>
+            <p>Everything else is dev work you can do alone in an afternoon. Prices require the owner. That conversation also confirms they're ready to go live. Start there — it unblocks everything.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MATRIX -->
+  <div class="matrix-card">
+    <div class="matrix-header">Advisor Agreement Matrix — which issues each advisor independently flagged</div>
+    <div class="matrix-body">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>Issue</th>
+            <th>Contrarian</th>
+            <th>First Principles</th>
+            <th>Expansionist</th>
+            <th>Outsider</th>
+            <th>Executor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>No prices shown</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+          <tr><td>No WhatsApp button</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+          <tr><td>Apps Script URL exposed</td><td class="check">✓</td><td class="check">✓</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+          <tr><td>Hardcoded stats / no attribution</td><td class="check">✓</td><td class="check">✓</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+          <tr><td>No JSON-LD structured data</td><td class="cross">—</td><td class="check">✓</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+          <tr><td>Form UX / reply ETA missing</td><td class="check">✓</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="cross">—</td></tr>
+          <tr><td>No geographic anchor for Nukus</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="cross">—</td></tr>
+          <tr><td>Local SEO / content gap</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td><td class="cross">—</td><td class="cross">—</td></tr>
+          <tr><td>Mobile perf / Core Web Vitals <em>(peer review)</em></td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td></tr>
+          <tr><td>privacy.html untracked + no consent checkbox <em>(peer review)</em></td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td></tr>
+          <tr><td>Multilingual form flow untested <em>(peer review)</em></td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td></tr>
+          <tr><td>HTTPS enforcement unverified <em>(peer review)</em></td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td><td class="cross">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ADVISOR RESPONSES -->
+  <div class="advisors-section">
+    <div class="section-heading">Advisor Responses (click to expand)</div>
+
+    <details>
+      <summary>
+        <span class="advisor-icon icon-c">⚔️</span>
+        The Contrarian
+        <span class="chevron">›</span>
+      </summary>
+      <div class="advisor-body">The Google Apps Script endpoint is a ticking clock. That URL in hotel.js is one search-engine cache away from becoming a spam cannon. Anyone can POST to it directly, flood the hotel's inbox, and exhaust the daily Gmail quota. The hotel owner gets zero reservations and a broken inbox on the same day. Fix it: add a CAPTCHA + origin check at minimum.
+
+The inquiry form is doing no heavy lifting. No prices means every visitor leaves to check Booking.com — and books there, paying OTA commission. You've built a brochure that actively funds the middleman. At minimum, put a "starting from" price on the rooms page. The owner will feel this gap the first week when they see zero direct inquiries.
+
+The hardcoded review stats will become a liability. When the real Booking.com score drifts — and it will — the site shows a lie. That's not a design problem, that's a credibility problem the owner discovers when a guest quotes the site back at them.
+
+No WhatsApp is a dealbreaker for this market. Uzbekistan runs on WhatsApp and Telegram for business communication. Having only Telegram misses half the audience. A floating WhatsApp button costs nothing and is table stakes for Central Asian hospitality.
+
+The Cyrillic address inline in HTML may break copy-paste for guests trying to navigate. Use proper UTF-8 encoding declarations and test it — don't assume.
+
+The "booking" flow has no date validation, no confirmation of room type, no price quote. A guest fills the form and gets... an email that says what exactly? This isn't a booking flow. It's a suggestion box. The owner will explain this to confused guests for months.</div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="advisor-icon icon-fp">🔬</span>
+        The First Principles Thinker
+        <span class="chevron">›</span>
+      </summary>
+      <div class="advisor-body">The real question is: what does a guest from this specific market actually do before booking? They open WhatsApp or Telegram and message the hotel directly. That is the primary booking channel for Central Asian hospitality at this price point. The elaborate inquiry form is solving the wrong problem. The hotel owner will close deals through messaging apps, not through email confirmations from a Google Apps Script. The form creates friction where there should be a single tap.
+
+What is actually broken at the foundation:
+
+The site has no prices. This is not a minor gap — it is the primary reason visitors bounce. A boutique hotel without prices signals either "too expensive" or "we don't trust you." Either interpretation kills conversion.
+
+The Google Apps Script URL being public is a real operational vulnerability.
+
+The hardcoded stats (8.2 rating, 155 reviews) will age badly and erode trust the moment a visitor cross-references them against Booking.com.
+
+What "sellable" actually requires:
+1. A WhatsApp direct-message button (single highest-ROI fix)
+2. Room prices, even "from $X/night"
+3. The form endpoint secured
+4. Structured data so Google shows the hotel in rich results for "hotel in Nukus"
+
+Everything else — gallery polish, multilingual copy — is finishing work. Hand this to the owner today and the first question will be: "How does someone actually book?"</div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="advisor-icon icon-ex">🚀</span>
+        The Expansionist
+        <span class="chevron">›</span>
+      </summary>
+      <div class="advisor-body">The site is thinking small when it could be thinking like a destination. Nukus + Savitsky Museum is an underrated gem on the Central Asia circuit — "last great undiscovered museum in the world." No blog, no "why Nukus" editorial section, no content that gives Google anything to rank beyond the hotel name.
+
+The booking gap is the biggest opportunity dressed as a problem. The inquiry form captures interest and then loses people to Booking.com. Integrating even a lightweight availability system (Beds24, Lodgify, or a Google Calendar-based widget) would convert interest into direct bookings with zero commission — compounding forever.
+
+WhatsApp floating button is the highest-converting CTA they're not running. Telegram is already linked in the footer but buried.
+
+Prices are absent. Absence of price signals one of two things: either too expensive to list, or too uncertain to trust. Neither converts. Even "from $X/night" creates an anchor.
+
+The multilingual setup (EN/RU/UZ) is genuinely excellent groundwork — but there's no local SEO content in those languages targeting "hotel Nukus," "гостиница Нукус," or "Nukus mehmonxonasi." The infrastructure exists; the content doesn't.
+
+This site could own the Nukus hospitality search results entirely. Right now it's leaving that to aggregators.</div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="advisor-icon icon-out">👁️</span>
+        The Outsider
+        <span class="chevron">›</span>
+      </summary>
+      <div class="advisor-body">First reaction: where even is this?
+
+"Nukus, Karakalpakstan, Uzbekistan" means nothing to me. I land on the homepage and have no geographic anchor — no "near X airport," no "2 hours from Tashkent." I don't know if I can even get there.
+
+No prices, so I leave. Every hotel site I've used shows at least a starting rate. Nothing here means I have to commit time to an inquiry form just to find out if it's in my budget. I won't do that. I'll go to Booking.com instead.
+
+The form feels like shouting into a void. I fill in my dates and hit send — then what? How long until someone replies? No timeframe communicated. The process feels unserious.
+
+Rating numbers with no source link look fabricated. "8.2 rating, 155 reviews" — from where? I can't click to verify. That's an instant credibility hit.
+
+No WhatsApp. This hotel is in Central Asia. WhatsApp is how business is done there.
+
+No photos of the surroundings or the Savitsky Museum. That's apparently the reason people come to Nukus. If the site doesn't lean into that, it's missing its single biggest selling point for international travelers.</div>
+    </details>
+
+    <details>
+      <summary>
+        <span class="advisor-icon icon-exec">⚡</span>
+        The Executor
+        <span class="chevron">›</span>
+      </summary>
+      <div class="advisor-body">Blocker-level problems (fix before delivery):
+
+1. No prices anywhere. Action: add a rates section to rooms.html and room.html — even "from $X/night." Call the hotel owner, get numbers, hardcode them.
+
+2. No WhatsApp contact. Action: add a floating wa.me button to every page. One anchor tag in site.js, fixed bottom-right.
+
+3. Google Apps Script URL exposed in hotel.js. Action: add Referrer and CORS checks inside the Apps Script doPost() to reject non-site requests. Rate-limit via PropertiesService. Takes 10 minutes.
+
+4. Hardcoded review stats with no attribution. Action: add "Source: Booking.com ↗" inline, or link directly to the Booking.com property page.
+
+Should-fix before handoff:
+
+5. No JSON-LD structured data. Action: add a script type="application/ld+json" block to index.html with Hotel schema — address, telephone, priceRange, geo coordinates. Twenty lines, one-time.
+
+6. Address in Cyrillic only. Action: also include a Latin transliteration for international visitors and for the structured data address field.</div>
+    </details>
+  </div>
+
+  <!-- PEER REVIEWS -->
+  <div class="peer-section">
+    <div class="section-heading">Peer Review Highlights</div>
+
+    <div class="peer-card">
+      <span class="peer-q">Reviewer 1</span>
+      <p><strong>Strongest: Executor</strong> — the only response structured as an actionable delivery checklist with concrete implementation steps a developer can work from directly.</p>
+      <p><strong>Biggest blind spot: Expansionist</strong> — spends its entire word budget on content strategy without naming a single blocker that prevents handing the site to the owner today. Never mentions the exposed endpoint.</p>
+      <p><strong>What all missed:</strong> The multilingual form flow is untested. Form fields, error states, confirmation messages, and the auto-reply email may not be translated. An Uzbek-speaking guest who gets English validation errors has a broken experience — a launch blocker none of the five advisors caught.</p>
+    </div>
+
+    <div class="peer-card">
+      <span class="peer-q">Reviewer 2</span>
+      <p><strong>Strongest: Executor</strong> — only one with prioritized output (blocker vs. should-fix) and specific tools named (PropertiesService for rate-limiting).</p>
+      <p><strong>Biggest blind spot: Expansionist</strong> — selling the ceiling while ignoring the leaking roof.</p>
+      <p><strong>What all missed:</strong> HTTPS enforcement not verified (form data in plaintext if HTTP is possible). Mobile performance — a dark-luxury image-heavy site will punish users on Central Asian mobile networks. The privacy page has legal exposure: no consent checkbox on the inquiry form despite collecting names and emails.</p>
+    </div>
+
+    <div class="peer-card">
+      <span class="peer-q">Reviewer 3</span>
+      <p><strong>Strongest: Executor</strong> — a task list you can execute, not a think-piece.</p>
+      <p><strong>Biggest blind spot: Expansionist</strong> — misses the security exposure entirely.</p>
+      <p><strong>What all missed:</strong> The in-page form confirmation gives guests no indication of when they'll hear back. (Note: the auto-reply email IS implemented in the Apps Script — the fix is adding reply ETA copy to the confirmation screen, not rewriting the backend.)</p>
+    </div>
+
+    <div class="peer-card">
+      <span class="peer-q">Reviewer 4</span>
+      <p><strong>Strongest: Contrarian</strong> — frames each gap as a consequence ("brochure that funds the middleman," "suggestion box"), not just a checklist. Gives the owner a reason to care.</p>
+      <p><strong>Biggest blind spot: Outsider</strong> — hedges the privacy policy point without verifying it; doesn't develop the reply-ETA observation.</p>
+      <p><strong>What all missed:</strong> Mobile performance. The target guest books on a phone on patchy 4G. Slow load time kills conversion before any of the other issues even matter.</p>
+    </div>
+
+    <div class="peer-card">
+      <span class="peer-q">Reviewer 5</span>
+      <p><strong>Strongest: Executor</strong> — reads like a dev ticket.</p>
+      <p><strong>Biggest blind spot: Expansionist</strong> — content strategy before fixing operational blockers.</p>
+      <p><strong>What all missed:</strong> privacy.html is untracked in git — not committed, may not survive deployment. No GDPR consent checkbox on form. Mobile UX / Core Web Vitals entirely absent from all five responses.</p>
+    </div>
+  </div>
+
+</main>
+
+<footer class="page-footer">
+  LLM Council · Damir Hotel Site Audit · Generated 2026-06-15 · 5 advisors · 5 peer reviews · Chairman synthesis
+</footer>
+
+</body>
+</html>
