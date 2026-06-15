@@ -299,7 +299,8 @@
       // collect form fields
       var data = {
         source:  form.closest('#inquiry-modal') ? 'modal' : 'contact-form',
-        _origin: window.location.hostname
+        _origin: window.location.hostname,
+        _lang:   localStorage.getItem('damir-lang') || 'en'
       };
       form.querySelectorAll('[name]').forEach(function (el) {
         if (el.name) data[el.name] = el.value;

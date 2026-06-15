@@ -22,12 +22,18 @@
 //      formEndpoint: 'PASTE_YOUR_WEB_APP_URL_HERE',
 //
 // 5. Set Script Properties (Project Settings → Script Properties):
+//      HOTEL_EMAIL      →  the inbox that receives booking inquiries
+//                          (e.g. damirhotel@gmail.com)
 //      ALLOWED_ORIGINS  →  your-domain.com,www.your-domain.com
-//    Without this, requests are accepted from any origin (dev mode).
-//    Comma-separated, no spaces, no protocol (e.g. "damirhotel.uz,www.damirhotel.uz").
+//    HOTEL_EMAIL falls back to damirhotel@gmail.com if not set.
+//    ALLOWED_ORIGINS: comma-separated, no spaces, no protocol.
+//    Without ALLOWED_ORIGINS, any origin is accepted (dev mode).
 //
 // 6. (Optional) visit the URL in a browser — you should see:
 //    {"ok":true,"service":"Damir Hotel form endpoint"}
+//
+// NOTE: to change the recipient email later, update HOTEL_EMAIL in
+// Script Properties — no redeployment needed.
 // ============================================================
 
 // ── rate-limit config ──────────────────────────────────────
@@ -75,7 +81,7 @@ function doPost(e) {
     ]);
 
     // --- email the hotel ---
-    var to      = 'damirhotel@gmail.com';
+    var to      = PropertiesService.getScriptProperties().getProperty('HOTEL_EMAIL') || 'damirhotel@gmail.com';
     var subject = 'New inquiry — ' + (data.name || 'guest') +
                   (data.checkin  ? ', ' + data.checkin  : '') +
                   (data.checkout ? ' – ' + data.checkout : '');
@@ -107,28 +113,13 @@ function doPost(e) {
 
     // Confirmation to the guest (only if they gave an email)
     if (data.email) {
-      var guestBody = [
-        'Dear ' + (data.name || 'Guest') + ',',
-        '',
-        'Thank you for reaching out to Damir Hotel. We have received your reservation inquiry and our team will reply within a few hours to confirm availability.',
-        '',
-        'Your request summary:',
-        '  Check-in:   ' + (data.checkin  || '—'),
-        '  Check-out:  ' + (data.checkout || '—'),
-        '  Guests:     ' + (data.guests   || '—'),
-        '  Room:       ' + (data.room     || 'No preference'),
-        '',
-        'If you have any urgent questions, you can reach us directly:',
-        '  Phone: +998 55 106 07 07',
-        '  Email: damirhotel@gmail.com',
-        '',
-        'Warm regards,',
-        'Damir Hotel · Рауаж 4, 230100 Nukus'
-      ].join('\n');
+      var lang       = data._lang || 'en';
+      var guestBody  = _guestConfirmBody(lang, data, to);
+      var guestSubj  = _guestConfirmSubject(lang);
 
       MailApp.sendEmail({
         to:      data.email,
-        subject: 'We received your inquiry — Damir Hotel',
+        subject: guestSubj,
         body:    guestBody,
         replyTo: to
       });
@@ -181,6 +172,86 @@ function _originAllowed(origin) {
   if (!origin) return false;
   var allowed = raw.split(',').map(function (s) { return s.trim().toLowerCase(); });
   return allowed.indexOf(origin.toLowerCase()) !== -1;
+}
+
+// Returns the guest confirmation subject line in the requested language.
+function _guestConfirmSubject(lang) {
+  if (lang === 'ru') return 'Мы получили ваш запрос — Damir Hotel';
+  if (lang === 'uz') return 'So'rovingizni qabul qildik — Damir Hotel';
+  return 'We received your inquiry — Damir Hotel';
+}
+
+// Returns the guest confirmation body in the requested language.
+function _guestConfirmBody(lang, data, hotelEmail) {
+  var dash = '—';
+  var ci   = data.checkin  || dash;
+  var co   = data.checkout || dash;
+  var g    = data.guests   || dash;
+
+  if (lang === 'ru') {
+    var roomRu = data.room || 'Без предпочтений';
+    return [
+      'Уважаемый(-ая) ' + (data.name || 'Гость') + ',',
+      '',
+      'Благодарим вас за обращение в Damir Hotel. Мы получили ваш запрос на бронирование и свяжемся с вами в течение нескольких часов для подтверждения наличия мест.',
+      '',
+      'Детали вашего запроса:',
+      '  Заезд:     ' + ci,
+      '  Выезд:     ' + co,
+      '  Гостей:    ' + g,
+      '  Номер:     ' + roomRu,
+      '',
+      'Если у вас срочные вопросы, вы можете связаться с нами напрямую:',
+      '  Телефон: +998 55 106 07 07',
+      '  Email:   ' + hotelEmail,
+      '',
+      'С уважением,',
+      'Damir Hotel · Рауаж 4, 230100 Нукус'
+    ].join('\n');
+  }
+
+  if (lang === 'uz') {
+    var roomUz = data.room || 'Farqi yo\'q';
+    return [
+      'Hurmatli ' + (data.name || 'Mehmon') + ',',
+      '',
+      'Damir Hotelga murojaat qilganingiz uchun rahmat. Bron so'rovingizni qabul qildik va bir necha soat ichida joy mavjudligini tasdiqlash uchun siz bilan bog'lanamiz.',
+      '',
+      'So'rovingiz tafsilotlari:',
+      '  Kirish:    ' + ci,
+      '  Chiqish:   ' + co,
+      '  Mehmonlar: ' + g,
+      '  Xona:      ' + roomUz,
+      '',
+      'Shoshilinch savollar bo'lsa, bevosita biz bilan bog'laning:',
+      '  Telefon: +998 55 106 07 07',
+      '  Email:   ' + hotelEmail,
+      '',
+      'Hurmat bilan,',
+      'Damir Hotel · Рауаж 4, 230100 Nukus'
+    ].join('\n');
+  }
+
+  // default: English
+  var roomEn = data.room || 'No preference';
+  return [
+    'Dear ' + (data.name || 'Guest') + ',',
+    '',
+    'Thank you for reaching out to Damir Hotel. We have received your reservation inquiry and our team will reply within a few hours to confirm availability.',
+    '',
+    'Your request summary:',
+    '  Check-in:   ' + ci,
+    '  Check-out:  ' + co,
+    '  Guests:     ' + g,
+    '  Room:       ' + roomEn,
+    '',
+    'If you have any urgent questions, you can reach us directly:',
+    '  Phone: +998 55 106 07 07',
+    '  Email: ' + hotelEmail,
+    '',
+    'Warm regards,',
+    'Damir Hotel · Рауаж 4, 230100 Nukus'
+  ].join('\n');
 }
 
 // Basic field validation. Returns an error string or null when valid.
