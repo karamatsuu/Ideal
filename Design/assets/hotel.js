@@ -41,6 +41,11 @@ window.HOTEL = {
     { n: '2.2 km', l: 'To Nukus Airport' },
   ],
 
+  /* -- source URL for the stats strip (Booking.com or Google Hotels page).
+     When set, a "Source: Booking.com ↗" attribution link appears below the
+     numbers so guests can verify the figures. Leave empty to hide it. -- */
+  statsSource: 'https://www.booking.com/hotel/uz/damir-nukus1.html',
+
   /* -- testimonials (rotating slider on homepage) -- */
   testimonials: [
     { text: 'The warmest welcome we had on our whole trip. The room was immaculate and the breakfast was extraordinary.', by: 'Aigerim K. — Almaty'  },

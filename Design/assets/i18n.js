@@ -471,7 +471,7 @@
 
   function addSwitcher() {
     if (doc.querySelector('.lang-switcher')) return;
-    var headerRight = doc.querySelector('.header-right');
+    var headerRight = doc.querySelector('.nav-right');
     if (headerRight) {
       headerRight.insertAdjacentHTML('afterbegin', renderSwitcher('desktop'));
     }
