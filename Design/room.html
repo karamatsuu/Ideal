@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Room — Damir Hotel</title>
 <meta name="description" content="Room detail at Damir Hotel.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Damir Hotel">
+<meta property="og:title" content="Room — Damir Hotel">
+<meta property="og:description" content="Room detail at Damir Hotel.">
+<meta property="og:url" content="https://damir-hotel.uz/room.html">
+<meta property="og:image" content="https://damir-hotel.uz/assets/photos/exterior-day.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
@@ -93,6 +100,7 @@
     </div>
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> <span data-h="name">Damir Hotel</span>. All rights reserved.</span>
+      <a href="privacy.html" style="color:rgba(246,241,231,0.5);font-size:.8rem;transition:color .3s" onmouseover="this.style.color='rgba(246,241,231,0.9)'" onmouseout="this.style.color='rgba(246,241,231,0.5)'">Privacy Policy</a>
       <span class="social" data-h-social><a href="https://www.instagram.com/damir.hotel.nukus?igsh=MXI1bjc1am8xc3BlMA==" target="_blank" rel="noopener">Instagram</a><a href="https://t.me/damirhotel" target="_blank" rel="noopener">Telegram</a></span>
     </div>
   </div>
@@ -117,8 +125,13 @@
         <div class="field"><label>Room type</label><select name="room"><option value="">No preference</option><option value="Twin Room">Twin Room</option><option value="Double or Twin Room">Double or Twin Room</option><option value="Triple Room">Triple Room</option><option value="Suite">Suite</option></select></div>
       </div>
       <div class="field"><label>Anything we should know?</label><textarea name="message" placeholder="Arrival time, occasion, requests…"></textarea></div>
+      <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none">
+      <div class="field field--consent">
+        <label class="consent-label"><input type="checkbox" name="consent" required><span>I have read and agree to the <a href="privacy.html">Privacy Policy</a></span></label>
+        <span class="err">Please accept the privacy policy to continue</span>
+      </div>
       <button type="submit" class="btn btn--block">Send inquiry</button>
-      <p class="muted" style="font-size:.78rem;text-align:center;margin:1rem 0 0">No payment is taken now — our team replies within a few hours to confirm availability.</p>
+      <p class="muted" style="font-size:.78rem;text-align:center;margin:.6rem 0 0">No payment required — we'll confirm availability within a few hours.</p>
     </form>
     <div class="form-success">
       <div class="ok">&#10003;</div>

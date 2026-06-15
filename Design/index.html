@@ -4,11 +4,46 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Damir Hotel — Quiet luxury in Nukus, Karakalpakstan</title>
-<meta name="description" content="Damir Hotel — a calm, warm retreat in Nukus, Karakalpakstan. Considered rooms and suites, a generous breakfast and unhurried 24-hour service.">
+<meta name="description" content="Damir Hotel — a calm, warm retreat in Nukus, Karakalpakstan, walking distance from the Savitsky Museum. Considered rooms and suites, a generous breakfast and unhurried 24-hour service.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Damir Hotel">
+<meta property="og:title" content="Damir Hotel — Quiet luxury in Nukus, Karakalpakstan">
+<meta property="og:description" content="Damir Hotel — a calm, warm retreat in Nukus, Karakalpakstan, walking distance from the Savitsky Museum. Considered rooms and suites, a generous breakfast and unhurried 24-hour service.">
+<meta property="og:url" content="https://damir-hotel.uz/">
+<meta property="og:image" content="https://damir-hotel.uz/assets/photos/exterior-day.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="stylesheet" href="assets/styles.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Hotel",
+  "name": "Damir Hotel",
+  "description": "A calm, warm retreat in Nukus, Karakalpakstan. Considered rooms and suites, a generous breakfast and unhurried 24-hour service.",
+  "url": "https://damir-hotel.uz/",
+  "telephone": "+998",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Nukus",
+    "addressRegion": "Karakalpakstan",
+    "addressCountry": "UZ"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "42.4667",
+    "longitude": "59.6000"
+  },
+  "image": "https://damir-hotel.uz/assets/photos/exterior-day.jpg",
+  "priceRange": "$$",
+  "amenityFeature": [
+    { "@type": "LocationFeatureSpecification", "name": "24-hour front desk", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Breakfast included", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Free Wi-Fi", "value": true }
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -41,7 +76,7 @@
 
 <section class="hero-split">
   <div class="hero-split-left">
-    <p class="eyebrow reveal-hero h1">Nukus · Karakalpakstan</p>
+    <p class="eyebrow reveal-hero h1">Nukus · Walking distance from the Savitsky Museum</p>
     <h1 class="reveal-hero h2">Quiet luxury,<br>warmly kept.</h1>
     <p class="hero-sub reveal-hero h3">Damir Hotel is a calm retreat of oak-warmed rooms, generous breakfasts and unhurried service — a considered base for work or rest.</p>
     <div class="hero-actions reveal-hero h3">
@@ -64,6 +99,7 @@
     </div>
     <div class="booking-submit"><button type="submit" class="btn">Check availability</button></div>
   </form>
+  <p style="text-align:center;font-size:.72rem;color:var(--muted);margin:.6rem 0 0;font-family:var(--sans)">By searching, you agree to our <a href="privacy.html" style="color:var(--muted);text-decoration:underline;font-weight:500">Privacy Policy</a>.</p>
 </div>
 
 <!-- welcome / intro -->
@@ -78,7 +114,7 @@
     </div>
     <div class="split-media tall reveal d1">
       <img src="assets/photos/IMG_1920.png" alt="The white façade of Damir Hotel">
-      <span class="media-tag">Est. — Nukus</span>
+      <span class="media-tag">Est. 2019 — Nukus</span>
     </div>
   </div>
 </section>
@@ -156,7 +192,7 @@
   <div class="hero-media"><img src="assets/photos/corridor.jpg" alt="A quiet corridor at Damir Hotel"></div>
   <div class="container cta-inner">
     <p class="eyebrow" style="color:var(--gold-2)">A quieter kind of stay</p>
-    <h2 class="serif" style="font-style:normal">“The luxury is in the calm —<br>and the calm is everywhere.”</h2>
+    <h2 class=”serif” style=”font-style:normal”>The luxury is in the calm —<br>and the calm is everywhere.</h2>
   </div>
 </section>
 
@@ -219,6 +255,7 @@
     </div>
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> <span data-h="name">Damir Hotel</span>. All rights reserved.</span>
+      <a href="privacy.html" style="color:rgba(246,241,231,0.5);font-size:.8rem;transition:color .3s" onmouseover="this.style.color='rgba(246,241,231,0.9)'" onmouseout="this.style.color='rgba(246,241,231,0.5)'">Privacy Policy</a>
       <span class="social" data-h-social><a href="https://www.instagram.com/damir.hotel.nukus?igsh=MXI1bjc1am8xc3BlMA==" target="_blank" rel="noopener">Instagram</a><a href="https://t.me/damirhotel" target="_blank" rel="noopener">Telegram</a></span>
     </div>
   </div>
@@ -247,8 +284,13 @@
         </div>
       </div>
       <div class="field"><label>Anything we should know?</label><textarea name="message" placeholder="Arrival time, occasion, requests…"></textarea></div>
+      <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none">
+      <div class="field field--consent">
+        <label class="consent-label"><input type="checkbox" name="consent" required><span>I have read and agree to the <a href="privacy.html">Privacy Policy</a></span></label>
+        <span class="err">Please accept the privacy policy to continue</span>
+      </div>
       <button type="submit" class="btn btn--block">Send inquiry</button>
-      <p class="muted" style="font-size:.78rem;text-align:center;margin:1rem 0 0">No payment is taken now — our team replies within a few hours to confirm availability.</p>
+      <p class="muted" style="font-size:.78rem;text-align:center;margin:.6rem 0 0">No payment required — we'll confirm availability within a few hours.</p>
     </form>
     <div class="form-success">
       <div class="ok">&#10003;</div>
