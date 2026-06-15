@@ -3,6 +3,15 @@
    ============================================================ */
 (function () {
   'use strict';
+
+  /* enforce HTTPS in production — redirect any plain-HTTP visitor */
+  if (location.protocol === 'http:' &&
+      location.hostname !== 'localhost' &&
+      location.hostname !== '127.0.0.1' &&
+      !location.hostname.startsWith('192.168.')) {
+    location.replace('https:' + location.href.slice(5));
+  }
+
   var doc = document;
 
   /* date helpers — use local date components to avoid UTC-offset drift */
@@ -55,6 +64,15 @@
         var l = doc.createElement('div'); l.className = 'l'; l.textContent = s.l;
         fact.appendChild(n); fact.appendChild(l); el.appendChild(fact);
       });
+      if (H.statsSource) {
+        var src = doc.createElement('a');
+        src.className = 'facts-source';
+        src.href = H.statsSource;
+        src.target = '_blank';
+        src.rel = 'noopener noreferrer';
+        src.textContent = 'Source: Booking.com ↗';
+        el.appendChild(src);
+      }
     });
     doc.querySelectorAll('[data-h-social]').forEach(function (el) {
       if (!H.social) return;
@@ -220,10 +238,15 @@
     var ok = true;
     form.querySelectorAll('[required]').forEach(function (input) {
       var field = input.closest('.field');
-      var val = (input.value || '').trim();
-      var bad = !val;
-      if (input.name === 'name' && val) bad = val.length < 2 || !/[A-Za-zÀ-ÿЀ-ӿ]/.test(val);
-      if (input.type === 'email' && val) bad = !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val);
+      var bad;
+      if (input.type === 'checkbox') {
+        bad = !input.checked;
+      } else {
+        var val = (input.value || '').trim();
+        bad = !val;
+        if (input.name === 'name' && val) bad = val.length < 2 || !/[A-Za-zÀ-ÿЀ-ӿ]/.test(val);
+        if (input.type === 'email' && val) bad = !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val);
+      }
       if (field) field.classList.toggle('invalid', bad);
       if (bad) ok = false;
     });
@@ -271,23 +294,34 @@
 
       var endpoint = window.HOTEL && window.HOTEL.formEndpoint;
       if (!endpoint) { showSuccess(); return; }
+      if (!/^https:\/\//i.test(endpoint)) { showError(); return; }
 
       // collect form fields
-      var data = { source: form.closest('#inquiry-modal') ? 'modal' : 'contact-form' };
+      var data = {
+        source:  form.closest('#inquiry-modal') ? 'modal' : 'contact-form',
+        _origin: window.location.hostname
+      };
       form.querySelectorAll('[name]').forEach(function (el) {
         if (el.name) data[el.name] = el.value;
       });
 
+      // honeypot: bots fill the hidden website field; silently succeed
+      if (data.website) { showSuccess(); return; }
+
       if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+
+      var ctrl    = new AbortController();
+      var timeout = setTimeout(function () { ctrl.abort(); }, 12000);
 
       fetch(endpoint, {
         method:  'POST',
         headers: { 'Content-Type': 'text/plain' },
-        body:    JSON.stringify(data)
+        body:    JSON.stringify(data),
+        signal:  ctrl.signal
       })
-      .then(function (r) { return r.json(); })
+      .then(function (r) { clearTimeout(timeout); return r.json(); })
       .then(function (json) { json.ok ? showSuccess() : showError(); })
-      .catch(showError);
+      .catch(function () { clearTimeout(timeout); showError(); });
     });
     // clear invalid on input; for date fields re-run date check so co stays linked
     form.addEventListener('input', function (e) {
